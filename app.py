@@ -54,6 +54,57 @@ class Leiding:
 
         return groepen
 
+
+class Leidingsploeg:
+    def __init__(self):
+        self.leiding = []
+        self.leidingDict = {}
+        self.groepNamen = {
+            'Speelclub': 0,
+            'Pimpel': 1,
+            'Rakwi': 2,
+            'Tito': 3,
+            'Keti': 4,
+            'Aspi': 5
+        }
+        self.groepen = []
+
+        self._maakLeidingsploeg()
+        self._maakLeidingDict()
+
+    def _nieuweLeiding(self, i, p, g, ev):
+        naam = p.iloc[i].iloc[0] # naam van persoon is het eerste item uit de rij met de index van de persoon
+        relaties = p.iloc[i].iloc[1:] # de relaties is alles behalve dat eerste item
+        groepen = g.iloc[i].iloc[1:] # de scores voor groepen beginnen ook eerst met de naam, score voor groepen is dus alles na de eerste cell
+        eigenVoorkeur = ev.iloc[i].iloc[1:] # zie hierboven
+
+        return Leiding(i, naam, relaties, groepen, eigenVoorkeur) # return het leiding object
+
+    def _maakLeidingsploeg(self):
+        xls = pd.ExcelFile(FILENAME) # open de file
+        personen = pd.read_excel(xls, 0) # lees de eerste (index 0) sheet (das dus die met personen normaal)
+        groepen = pd.read_excel(xls, 1) # lees de tweede (index 1) sheet (das die met de groepen normaal)
+        eigenVoorkeur = pd.read_excel(xls, 2) # lees de derde (index 2) sheet (das die met de eigen voorkeur van leidingsploegje)
+
+        for i in range(0, personen.index.stop):
+            self.leiding.append(self._nieuweLeiding(i, personen, groepen, eigenVoorkeur)) # voeg elke leiding toe aan de array met alle leiding
+
+    def _maakLeidingDict(self):
+        leidingList = [] # maak de array voor de namen (nog wel leeg)
+        indexList = list(range(len(self.leiding))) # maak de array met indexen (al wel gevult)
+
+        for i in self.leiding: # vul de array met namen
+            leidingList.append(i.naam)
+
+        self.leidingDict = dict(zip(leidingList, indexList)) # voeg indexen toe aan de namen met de namen als key
+
+class LeidingsGroep(): # Class voor elke groep makkelijk te kunnen aanspreken
+    def __init__(self, index, naam):
+        self.index = index
+        self.naam = naam
+        self.score = 0
+        self.leiding = []
+
 def test():
     xls = pd.ExcelFile(FILENAME)
     personen = pd.read_excel(xls, 0)
@@ -86,43 +137,9 @@ def test():
 
         print('\n=============================\n')
 
-def maakEenLeiding(i, p, g, ev):
-    naam = p.iloc[i].iloc[0] # naam van persoon is het eerste item uit de rij met de index van de persoon
-    relaties = p.iloc[i].iloc[1:] # de relaties is alles behalve dat eerste item
-    groepen = g.iloc[i].iloc[1:] # de scores voor groepen beginnen ook eerst met de naam, score voor groepen is dus alles na de eerste cell
-    eigenVoorkeur = ev.iloc[i].iloc[1:] # zie hierboven
-
-    return Leiding(i, naam, relaties, groepen, eigenVoorkeur) # return het leiding object
-
-def maakLeidingsploeg():
-    xls = pd.ExcelFile(FILENAME) # open de file
-    personen = pd.read_excel(xls, 0) # lees de eerste (index 0) sheet (das dus die met personen normaal)
-    groepen = pd.read_excel(xls, 1) # lees de tweede (index 1) sheet (das die met de groepen normaal)
-    eigenVoorkeur = pd.read_excel(xls, 2) # lees de derde (index 2) sheet (das die met de eigen voorkeur van leidingsploegje)
-
-    leiding = [] # alle leiding met Leiding object in een array met juiste index
-
-    for i in range(0, personen.index.stop):
-        leiding.append(maakEenLeiding(i, personen, groepen, eigenVoorkeur)) # voeg elke leiding toe aan de array met alle leiding
-
-    return leiding
-
-def maakLeidingDict(leiding):
-    leidingList = [] # maak de array voor de namen (nog wel leeg)
-    indexList = list(range(len(leiding))) # maak de array met indexen (al wel gevult)
-
-    for i in leiding: # vul de array met namen
-        leidingList.append(i.naam)
-
-    return dict(zip(leidingList, indexList)) # voeg indexen toe aan de namen met de namen als key
-
-
 def main():
-    leiding = maakLeidingsploeg() # een array van alle leiding met hun voorkeuren
-
-    leidingDict = maakLeidingDict(leiding) # nu kan je dit gebruiken om op naam te zoeken ipv op index (iets makkelijker, zeker om te testen)
-
-    print(leiding[leidingDict["Loeka"]].groepMetScore(1))
+    L = Leidingsploeg()
+    print(L.leiding[L.leidingDict["Lode"]].relatiesAlsArray())
 
 if __name__ == '__main__':
     main()

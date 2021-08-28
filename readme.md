@@ -1,5 +1,11 @@
 # Leidingsvorming Automatisatie
 
+# TO DO
+
+- leg de `Hoe te gebruiken` beter uit
+- maak een Leidingsploeg class
+- maak de berekening voor de ideale leidingsploeg
+
 # Hoe te gebruiken
 
 1. Download de `app.py` en zet deze in een mapje.

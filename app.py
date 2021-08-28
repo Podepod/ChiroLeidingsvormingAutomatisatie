@@ -6,6 +6,7 @@ class Leiding:
     def __init__(self, index, naam, relaties, groepen, eigenVoorkeur):
         self.index = index
         self.naam = naam
+        # fix nog de twijfelaars : antwoorden als '4/1' enzo
         self.relaties = relaties # de scores die zij gaven aan anderen?
         self.groepen = groepen
         self.eigenVoorkeur = eigenVoorkeur
@@ -21,6 +22,16 @@ class Leiding:
 
     def relatieMetIndex(self, index):
         return self.relaties.iloc[index]
+    
+    def relatiesMetScore(self, score):
+        relaties = []
+
+        for i in range(len(self.relaties)):
+            if (self.relaties.iloc[i] == score):
+                relaties.append((i, score))
+
+        return relaties
+            
 
     # groepen
     def groepenAlsArray(self):
@@ -33,6 +44,15 @@ class Leiding:
 
     def groepMetIndex(self, index):
         return self.groepen.iloc[index]
+
+    def groepMetScore(self, score):
+        groepen = []
+
+        for i in range(len(self.groepen)):
+            if (self.groepen.iloc[i] == score):
+                groepen.append((i, score))
+
+        return groepen
 
 def test():
     xls = pd.ExcelFile(FILENAME)
@@ -101,6 +121,8 @@ def main():
     leiding = maakLeidingsploeg() # een array van alle leiding met hun voorkeuren
 
     leidingDict = maakLeidingDict(leiding) # nu kan je dit gebruiken om op naam te zoeken ipv op index (iets makkelijker, zeker om te testen)
+
+    print(leiding[leidingDict["Loeka"]].groepMetScore(1))
 
 if __name__ == '__main__':
     main()

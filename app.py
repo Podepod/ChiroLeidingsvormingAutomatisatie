@@ -69,8 +69,9 @@ class Leidingsploeg:
         }
         self.groepen = []
 
-        self._maakLeidingsploeg()
+        self._initLeidingsploeg()
         self._maakLeidingDict()
+        self._initGroepen()
 
     def _nieuweLeiding(self, i, p, g, ev):
         naam = p.iloc[i].iloc[0] # naam van persoon is het eerste item uit de rij met de index van de persoon
@@ -80,7 +81,7 @@ class Leidingsploeg:
 
         return Leiding(i, naam, relaties, groepen, eigenVoorkeur) # return het leiding object
 
-    def _maakLeidingsploeg(self):
+    def _initLeidingsploeg(self):
         xls = pd.ExcelFile(FILENAME) # open de file
         personen = pd.read_excel(xls, 0) # lees de eerste (index 0) sheet (das dus die met personen normaal)
         groepen = pd.read_excel(xls, 1) # lees de tweede (index 1) sheet (das die met de groepen normaal)
@@ -98,12 +99,22 @@ class Leidingsploeg:
 
         self.leidingDict = dict(zip(leidingList, indexList)) # voeg indexen toe aan de namen met de namen als key
 
+    def _initGroepen(self):
+        for groepnaam in self.groepNamen:
+            self.groepen.append(LeidingsGroep(self.groepNamen[groepnaam], groepnaam))
+
 class LeidingsGroep(): # Class voor elke groep makkelijk te kunnen aanspreken
     def __init__(self, index, naam):
         self.index = index
         self.naam = naam
-        self.score = 0
+        self.gemiddeldeRelatieScore = 0
+        self.gemiddeldeGroepScore = 0
+        self.gemiddeldeTotaalScore = 0
         self.leiding = []
+
+    # functie om leiding toe te voegen
+    # functie toevoegen om leiding te checken
+    # functies toevoegen om gemiddelde scores te berekenen
 
 def test():
     xls = pd.ExcelFile(FILENAME)

@@ -6,6 +6,9 @@
 - maak een Leidingsploeg class
 - maak de berekening voor de ideale leidingsploeg
 
+# Ideetjes
+- miss ook een gemiddelde score toevoegen voor de gegeven score aan groepen en relaties zodat als iemand een hoge gemiddelde score heeft en die geeft iemand een lage score, is dat wel duidelijk dat die absoluut niet daarmee wilt staan?
+
 # Hoe te gebruiken
 
 1. Download de `app.py` en zet deze in een mapje.
